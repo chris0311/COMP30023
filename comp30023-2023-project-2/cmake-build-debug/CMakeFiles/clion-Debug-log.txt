@@ -1,0 +1,3 @@
+C:\Windows\system32\wsl.exe --distribution Ubuntu --exec /bin/bash -c "export CMAKE_COLOR_DIAGNOSTICS=ON && export CLION_IDE=TRUE && export JETBRAINS_IDE=TRUE && cd /mnt/c/Projects/Unimelb/COMP30023/comp30023-2023-project-2/cmake-build-debug && /usr/bin/gcc -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -G 'CodeBlocks - Unix Makefiles' /mnt/c/Projects/Unimelb/COMP30023/comp30023-2023-project-2"
+gcc: error: CodeBlocks - Unix Makefiles: No such file or directory
+gcc: error: unrecognized command line option ‘-G’

@@ -1,0 +1,44 @@
+Chris Liang, junyliang, 1159696
+
+System description:
+The RPC system is implemented using TCP to avoid data corruption, loss, and duplication. Other protocols like UDP and
+QUIC, although faster, are not reliable -- packets can loss with UDP, and packets can be firewalled with QUIC. In the
+system, the server and client will first need to initialize. After that, the server will be able to register functions
+(i.e. store function pointers), and clients will be able to query after the server is ready. The client can check if a
+function exists by sending a find request, which will send a string to the server with FIND at the start indicating find
+operation and followed by the function name. The server will then check if the function exists and send a response back,
+with code 200 indicating success and 404 indicating failure. After the client knows that the function exists, it can
+call the function by sending a call request, which will send a string to the server with CALL at the start indicating
+call operation and followed by the function name. The server will again check if the function exists and send a response
+code back. If success, the client will start sending arguments by sending attributes of rpc_data one by one. Notice that
+numeric numbers are sent using network byte order. In each attribute send, the server will reply 200 if success. After
+sending all the arguments, the client will wait for response while the server will execute the function and send the
+result back in the same way as sending arguments. The client will then receive the result and return it to the caller.
+Notice that data2 will not be sent if data2_len is 0.
+
+1. The RPC system, should not take responses from anyone because of security reasons: if a RPC system takes calls from
+everyone, it will be susceptible to attacks (like DDOS). The RPC system should only take calls from authorized users.
+However, since there are no information provided and we are only implementing a RPC system, security-related features
+are not implemented.
+
+2. No, authentication should not be done in the RPC system. Authentication should be done in a higher layer that
+uses the RPC system since the RPC system should be generic and provide services to upper layers.
+
+3. The RPC system uses TCP as the transport layer protocol. TCP is a reliable protocol that guarantees that the data
+sent will be received by the other end in order and without duplication, which is required by the RPC system. However,
+using TCP will introduce overheads because of the 3-way handshake and the ACKs, making the process slower comparing to
+other protocols like UDP.
+
+4. Sockets in the server are created in the serve_all function, while the client creates a socket in the init function.
+Because the server need to register functions before it can serve, hence, socket are created when it's ready to serve.
+On the other hand, the client don't need to do any preparation before it can call a function, hence, it creates a socket
+in the init function.
+
+5. Server is allocated dy
+
+6. If the endianness is different on the client and the server, without handling, the data will be corrupted, as they
+are interpreted differently. Using network byte order, during transmission is a solution. Before sending, the data is
+converted to network byte order, and after receiving, the data is converted back to host byte order. Therefore, the
+endianness problem will not affect the data.
+
+
